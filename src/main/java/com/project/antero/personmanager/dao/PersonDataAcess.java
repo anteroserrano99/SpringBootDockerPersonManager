@@ -20,6 +20,8 @@ public class PersonDataAcess implements PersonDao {
 
     @Override
     public int insertPerson(UUID id, Person person) {
+
+        //TODO
         return 0;
     }
 
@@ -41,6 +43,9 @@ public class PersonDataAcess implements PersonDao {
 
     @Override
     public int updatePerson(Person person) {
+        String query = "UPDATE person SET name = '"+ person.getName()+ "' WHERE person.id = '"+person.getId().toString()+"'";
+        jdbcTemplate.execute(query);
+
         return 0;
     }
 
@@ -53,6 +58,17 @@ public class PersonDataAcess implements PersonDao {
 
     @Override
     public Optional<Person> getPersonbyId(UUID id) {
-        return Optional.empty();
+        String queery = "SELECT id, name FROM person WHERE person.id = '"+id.toString()+"'";
+        Person person = jdbcTemplate.queryForObject(queery,(rs, rowNum) -> {
+            UUID personId = UUID.fromString(rs.getString("id"));
+            String name = rs.getString("name");
+            return new Person(personId, name);
+
+        });
+
+
+
+
+        return Optional.ofNullable(person);
     }
 }
